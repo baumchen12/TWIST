@@ -9,17 +9,17 @@ var HighSchoolSchema = new Schema (
 );
 
 // Virtual for high school's full name
-HighSchoolSchema
-.virtual('name')
-.get(function () {
-	return this.name;
-});
+//HighSchoolSchema
+//.virtual('name')
+//.get(function () {
+	//return this.name;
+//});
 
 // Virtual for high school's URL
 HighSchoolSchema
 .virtual('url')
 .get(function () {
-	return '/catalog/highschool/' + this._id;
+	return '/index/highschool/' + this._id;
 });
 
 // Export model

@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var PresenterSchema = new Schema (
 {
+    //presentID: {type: String, required: true},
 	lastName: {type: String, required: true, max: 100},
 	firstName: {type: String, required: true, max: 100},
 	occupation: {type: String, required: true, max: 100},
@@ -24,7 +25,7 @@ PresenterSchema
 PresenterSchema
 .virtual('url')
 .get(function () {
-	return '/catalog/presenter/' + this._id;
+	return '/index/presenter/' + this._id;
 });
 
 // Export model

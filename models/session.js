@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var SessionSchema = new Schema (
 {
+    //sessionNum: {type: Number, required: true},
 	Time: {type: Date, required: true},
 }
 );
@@ -12,7 +13,7 @@ var SessionSchema = new Schema (
 SessionSchema
 .virtual('url')
 .get(function () {
-	return '/catalog/session/' + this._id;
+	return '/index/session/' + this._id;
 });
 
 // Export model

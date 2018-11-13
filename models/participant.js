@@ -24,7 +24,7 @@ ParticipantSchema
 ParticipantSchema
 .virtual('url')
 .get(function () {
-	return '/catalog/participant/' + this._id;
+	return '/index/participant/' + this._id;
 });
 
 // Export model

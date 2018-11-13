@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var TopicSchema = new Schema (
 {
+    //topicCode: {type: Number, required: true},
 	title: {type: String, required: true, max: 100},
 	description: {type: String, required: true, max: 150},
 }
@@ -13,7 +14,7 @@ var TopicSchema = new Schema (
 TopicSchema
 .virtual('url')
 .get(function () {
-	return '/catalog/topic/' + this._id;
+	return '/index/topic/' + this._id;
 });
 
 // Export model

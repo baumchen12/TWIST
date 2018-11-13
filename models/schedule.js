@@ -4,8 +4,10 @@ var Schema = mongoose.Schema;
 
 var ScheduleSchema = new Schema (
 {
-	topicCode: {type: String, required: true, max: 100},
-	presenterID: {type: String, required: true},
+    sessionNum: {type: Schema.Types.ObjectId, ref: 'Session', required: true},
+    roomNum: {type: Schema.Types.ObjectId, ref: 'Room', required: true},
+	topicCode: {type: Schema.Types.ObjectId, ref: 'Topic', required: true},
+	presenterID: {type: Schema.Types.ObjectId, ref: 'Presenter', required: true},
 }
 );
 
@@ -13,7 +15,7 @@ var ScheduleSchema = new Schema (
 ScheduleSchema
 .virtual('url')
 .get(function () {
-	return '/catalog/schedule/' + this._id;
+	return '/index/schedule/' + this._id;
 });
 
 // Export model
