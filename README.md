@@ -1,3 +1,3 @@
 # TWIST
 
-SET DEBUG=TWIST:* & npm run devstart
+SET DEBUG=TWIST:* & npm start
