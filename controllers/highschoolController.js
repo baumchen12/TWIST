@@ -6,9 +6,9 @@ exports.highschool_list = function(req,res) {
 };
 
 // Display detail page of all HighSchools
-//exports.highschool_detail = function(req,res) {
-    //res.send('NOT IMPLEMENTED: School Detail')
-//};
+exports.highschool_detail = function(req,res) {
+    res.send('NOT IMPLEMENTED: School Detail')
+};
 
 // Display HighSchool create form on GET.
 exports.highschool_create_get = function(req,res) {

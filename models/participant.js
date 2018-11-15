@@ -8,7 +8,7 @@ var ParticipantSchema = new Schema (
 	firstName: {type: String, required: true, max: 100},
 	address: {type: String, required: true, max: 100},
 	email: {type: String, required: true, max: 100},
-	timeStamp: {type: Date default, Date.now},
+	timeStamp: {type: Date, default: Date.now},
 	participantType: {type: String},
 }
 );

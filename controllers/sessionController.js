@@ -1,4 +1,4 @@
-var Session = require('../models/sessionr');
+var Session = require('../models/session');
 
 // Display list of all Sessions
 exports.session_list = function(req,res) {
@@ -6,9 +6,9 @@ exports.session_list = function(req,res) {
 };
 
 // Display detail page of all Sessions
-//exports.session_detail = function(req,res) {
-    //res.send('NOT IMPLEMENTED: Session Detail')
-//};
+exports.session_detail = function(req,res) {
+    res.send('NOT IMPLEMENTED: Session Detail')
+};
 
 // Display Session create form on GET.
 exports.session_create_get = function(req,res) {

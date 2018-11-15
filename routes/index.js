@@ -12,7 +12,7 @@ var topic_controller = require('../controllers/topicController');
 
 /// Schedule ROUTES ///
 
-// GET catalog home page.
+// GET index home page.
 router.get('/', schedule_controller.index);
 
 // GET request for creating a Schedule. NOTE This must come before routes that display Schedule (uses id).
@@ -37,7 +37,7 @@ router.post('/schedule/:id/update', schedule_controller.schedule_update_post);
 router.get('/schedule/:id', schedule_controller.schedule_detail);
 
 // GET request for list of all Schedule items.
-router.get('/schedules', schedule_controller.book_list);
+router.get('/schedules', schedule_controller.schedule_list);
 
 /// HighSchool ROUTES ///
 

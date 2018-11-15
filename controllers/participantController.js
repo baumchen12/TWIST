@@ -6,9 +6,9 @@ exports.participant_list = function(req,res) {
 };
 
 // Display detail page of all Participants
-//exports.participant_detail = function(req,res) {
-    //res.send('NOT IMPLEMENTED: Participant Detail')
-//};
+exports.participant_detail = function(req,res) {
+    res.send('NOT IMPLEMENTED: Participant Detail')
+};
 
 // Display Participant create form on GET.
 exports.participant_create_get = function(req,res) {

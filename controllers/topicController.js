@@ -6,9 +6,9 @@ exports.topic_list = function(req,res) {
 };
 
 // Display detail page of all Topics
-//exports.topic_detail = function(req,res) {
-    //res.send('NOT IMPLEMENTED: Topic Detail')
-//};
+exports.topic_detail = function(req,res) {
+    res.send('NOT IMPLEMENTED: Topic Detail')
+};
 
 // Display Topic create form on GET.
 exports.topic_create_get = function(req,res) {

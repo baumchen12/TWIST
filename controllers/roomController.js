@@ -6,9 +6,9 @@ exports.room_list = function(req,res) {
 };
 
 // Display detail page of all Rooms
-//exports.room_detail = function(req,res) {
-    //res.send('NOT IMPLEMENTED: Room Detail')
-//};
+exports.room_detail = function(req,res) {
+    res.send('NOT IMPLEMENTED: Room Detail')
+};
 
 // Display Room create form on GET.
 exports.room_create_get = function(req,res) {

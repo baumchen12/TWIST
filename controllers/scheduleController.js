@@ -10,9 +10,9 @@ exports.schedule_list = function(req,res) {
 };
 
 // Display detail page of all Schedules
-//exports.schedule_detail = function(req,res) {
-    //res.send('NOT IMPLEMENTED: Schedule Detail')
-//};
+exports.schedule_detail = function(req,res) {
+    res.send('NOT IMPLEMENTED: Schedule Detail')
+};
 
 // Display Schedule create form on GET.
 exports.schedule_create_get = function(req,res) {

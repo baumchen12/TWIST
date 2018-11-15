@@ -6,9 +6,9 @@ exports.presenter_list = function(req,res) {
 };
 
 // Display detail page of all Presenters
-//exports.presenter_detail = function(req,res) {
-    //res.send('NOT IMPLEMENTED: Presenter Detail')
-//};
+exports.presenter_detail = function(req,res) {
+    res.send('NOT IMPLEMENTED: Presenter Detail')
+};
 
 // Display Presenter create form on GET.
 exports.presenter_create_get = function(req,res) {
