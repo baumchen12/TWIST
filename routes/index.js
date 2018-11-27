@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-// Require ctonroller modules
+// Require controller modules
 var highschool_controller = require('../controllers/highschoolController');
 var participant_controller = require('../controllers/participantController');
 var presenter_controller = require('../controllers/presenterController');
@@ -196,8 +196,8 @@ router.get('/topic/:id', topic_controller.topic_detail);
 router.get('/topics', topic_controller.topic_list);
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+//router.get('/', function(req, res, next) {
+  //res.render('index', { title: 'Express' });
+//});
 
 module.exports = router;
