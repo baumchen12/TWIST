@@ -1,7 +1,21 @@
 var Schedule = require('../models/schedule');
+var HighSchool = require('../models/highschool');
+var Participant = require('../models/participant');
+var Presenter = require('../models/schedule');
+var Room = require('../models/schedule');
+var Session = require('../models/session');
+var Topic = require('../models/topic');
+
+var async = require('async');
 
 exports.index = function(req, res) {
-    res.send('NOT IMPLEMENTED: Site Home Page');
+    async.parallel({
+       participant_count: function(callback) {
+         Participant.countDocuments({}, callback);
+       },
+    }, function(err, results) {
+        res.render('index', { title: 'Local Library Home', error: err, data: results });
+    });
 };
 
 // Display list of all Schedules

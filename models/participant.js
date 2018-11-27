@@ -10,6 +10,8 @@ var ParticipantSchema = new Schema (
 	email: {type: String, required: true, max: 100},
 	timeStamp: {type: Date, default: Date.now},
 	participantType: {type: String},
+    //interest:{}, needs added
+    //session: needs added
 }
 );
 
