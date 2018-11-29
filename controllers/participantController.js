@@ -1,8 +1,13 @@
 var Participant = require('../models/participant');
 
 // Display list of all Participant
-exports.participant_list = function(req,res) {
-    res.send('NOT IMPLEMENTED: Participant List')
+exports.participant_list = function(req,res,next) {
+    Participant.find()
+    .sort([['lastName', 'ascending']])
+    .exec(function (err, list_participants) {
+      if (err) { return next(err); }
+      res. render('participant_list', {title: 'Participant List', participant_list: list_participants});
+    });
 };
 
 // Display detail page of all Participants

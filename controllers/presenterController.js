@@ -1,8 +1,13 @@
-var Presenter = require('../models/schedule');
+var Presenter = require('../models/presenter');
 
 // Display list of all Presenters
-exports.presenter_list = function(req,res) {
-    res.send('NOT IMPLEMENTED: Presenter List')
+exports.presenter_list = function(req,res,next) {
+    Presenter.find()
+    .sort([['lastName', 'ascending']])
+    .exec(function (err, list_presenters) {
+      if (err) { return next(err); }
+      res.render('presenter_list', {title: 'Presenter List', presenter_list: list_presenters});
+    });
 };
 
 // Display detail page of all Presenters

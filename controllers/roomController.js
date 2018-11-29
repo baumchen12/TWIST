@@ -1,8 +1,13 @@
-var Room = require('../models/schedule');
+var Room = require('../models/room');
 
 // Display list of all Rooms
-exports.room_list = function(req,res) {
-    res.send('NOT IMPLEMENTED: Room List')
+exports.room_list = function(req,res,next) {
+    Room.find()
+    .sort([['roomNumber', 'ascending']])
+    .exec(function (err, list_rooms) {
+      if (err) { return next(err); }
+      res.render('room_list', {title: 'Room List', room_list: list_rooms});
+    });
 };
 
 // Display detail page of all Rooms

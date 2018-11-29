@@ -1,8 +1,13 @@
 var HighSchool = require('../models/highschool');
 
 // Display list of all HighSchools
-exports.highschool_list = function(req,res) {
-    res.send('NOT IMPLEMENTED: School List')
+exports.highschool_list = function(req,res,next) {
+    HighSchool.find()
+    .sort([['name', 'ascending']])
+    .exec(function (err, list_highschools) {
+      if (err) { return next(err); }
+      res.render('highschool_list', {title: 'Highschool List', highschool_list: list_highschools});
+    });
 };
 
 // Display detail page of all HighSchools

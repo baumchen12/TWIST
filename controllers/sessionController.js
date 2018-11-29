@@ -1,8 +1,13 @@
 var Session = require('../models/session');
 
 // Display list of all Sessions
-exports.session_list = function(req,res) {
-    res.send('NOT IMPLEMENTED: Session List')
+exports.session_list = function(req,res,next) {
+    Session.find()
+    .sort([['time', 'ascending']])
+    .exec(function (err, list_sessions) {
+      if (err) { return next(err); }
+      res.render('session_list', {title: 'Session List', session_list: list_sessions});
+    });
 };
 
 // Display detail page of all Sessions

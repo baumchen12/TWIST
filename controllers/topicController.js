@@ -1,8 +1,13 @@
 var Topic = require('../models/topic');
 
 // Display list of all Topics
-exports.topic_list = function(req,res) {
-    res.send('NOT IMPLEMENTED: Topic List')
+exports.topic_list = function(req,res,next) {
+    Topic.find()
+    .sort([['title', 'ascending']])
+    .exec(function (err, list_topics) {
+      if (err) { return next(err); }
+      res.render('topic_list', {title: 'Topic List', topic_list: list_topics});
+    });
 };
 
 // Display detail page of all Topics
