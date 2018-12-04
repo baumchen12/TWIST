@@ -7,6 +7,7 @@ block content
     each participant in participant_list
       li 
         a(href=participant.url) #{participant.name} 
+        //| <br>#{participant.address}
 
     else
       li There are no participants.

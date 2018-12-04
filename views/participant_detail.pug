@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+  h1 Participant: #{participant.name}
+  
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Books
+    
+    dl
+    //each schedule in participant_schedules
+      dt 
+        //a(href=schedule.url) #{participant.name}
+      dd #{participant.address}
+
+    else
+      p This participant has no schedules.
