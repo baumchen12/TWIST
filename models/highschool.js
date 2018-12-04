@@ -8,13 +8,6 @@ var HighSchoolSchema = new Schema (
 }
 );
 
-// Virtual for high school's full name
-//HighSchoolSchema
-//.virtual('name')
-//.get(function () {
-	//return this.name;
-//});
-
 // Virtual for high school's URL
 HighSchoolSchema
 .virtual('url')

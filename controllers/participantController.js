@@ -2,6 +2,9 @@ var Participant = require('../models/participant');
 var Schedule = require('../models/schedule');
 var async = require('async');
 
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
+
 //const { body,validationResult } = require('express-validator/check');
 //const { sanitizeBody } = require('express-validator/filter');
 
@@ -36,28 +39,87 @@ exports.participant_detail = function(req,res, next) {
         }
         res.render('participant_detail', { title: 'Participant Detail', participant: results.participant, participant_schedules: results.participant_schedules } );
     });*/
-  res.send('NOT IMPLEMENTED: Participant create GET')
+  res.send('NOT IMPLEMENTED: Participant detail page')
 };
 
 // Display Participant create form on GET.
-exports.participant_create_get = function(req,res) {
-    //res.render('participant_form', { title: 'Create Participant' });
-    res.send('NOT IMPLEMENTED: Participant Create POST')
+exports.participant_create_get = function(req,res,next) {
+    res.render('participant_form', { title: 'Create Participant' });
 };
 
 // Handle Participant create on POST
-exports.participant_create_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: Participant Create POST')
-};
+exports.participant_create_post = [
+
+    // Validate fields.
+    body('firstName').isLength({ min: 1 }).trim().withMessage('First name must be specified.')
+        .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
+    body('lastName').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
+        .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.'),
+    body('address', 'Address is required').isLength({ min:1 }).trim(),
+    body('email', 'Email is required').isLength({ min: 1 }).trim(),
+
+    // Sanitize fields.
+    sanitizeBody('firstName').trim().escape(),
+    sanitizeBody('lastName').trim().escape(),
+    sanitizeBody('address').trim().escape(),
+    sanitizeBody('email').trim().escape(),
+
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized values/errors messages.
+            res.render('participant_form', { title: 'Create Participant', participant: req.body, errors: errors.array() });
+            return;
+        }
+        else {
+            // Data from form is valid.
+
+            // Create a Participant object with escaped and trimmed data.
+            var participant = new Participant(
+                {
+                    lastName: req.body.lastName,
+                    firstName: req.body.firstName,
+                    address: req.body.address,
+                    email: req.body.email
+                });
+            participant.save(function (err) {
+                if (err) { return next(err); }
+                // Successful - redirect to new participant record.
+                res.redirect(participant.url);
+            });
+        }
+    }
+];
 
 // Display Participant delete form on GET
-exports.participant_delete_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: Participant delete GET')
+exports.participant_delete_get = function(req,res,next) {
+    
+    Participant.findById(req.params.id)
+    .exec(function (err, participant) {
+        if (err) { return next(err); }
+        if (participant==null) { // No results.
+            res.redirect('/index/participants');
+        }
+        // Successful, so render.
+        res.render('participant_delete', { title: 'Delete Participant', participant: participant});
+    })
+    //res.send('NOT IMPLEMENTED: Participant delete GET')
 };
 
 // Handle Participant delete on POST
 exports.participant_delete_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: Participant delete POST')
+    
+    // Assume valid Participant id in field.
+    Participant.findByIdAndRemove(req.body.id, function deleteParticipant(err) {
+        if (err) { return next(err); }
+        // Success, so redirect to list of participants.
+        res.redirect('/index/participants');
+    });
+    //res.send('NOT IMPLEMENTED: Participant delete POST')
 };
 
 //Display Participant update form on GET
