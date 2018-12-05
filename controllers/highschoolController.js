@@ -61,21 +61,78 @@ exports.highschool_create_post = [
 ];
 
 // Display HighSchool delete form on GET
-exports.highschool_delete_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: School delete GET')
+exports.highschool_delete_get = function(req,res,next) {
+    
+    HighSchool.findById(req.params.id)
+    .exec(function (err, highschool){
+        if (err) { return next(err); }
+        if (highschool==null) { // No results.
+            res.redirect('/index/highschools');
+        }
+        // Successful, so render.
+        res.render('highschool_delete', { title: 'Delete Highschool', highschool: highschool});
+    })
 };
 
 // Handle HighSchool delete on POST
-exports.highschool_delete_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: School delete POST')
+exports.highschool_delete_post = function(req,res,next) {
+    
+    // Assume valid Highschool id in field.
+    HighSchool.findByIdAndRemove(req.body.id, function deleteHighSchool(err){
+        if (err) { return next(err); }
+        // Success, so redirect to list of highschools.
+        res.redirect('/index/highschools');
+    })
 };
 
 //Display HighSchool update form on GET
-exports.highschool_update_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: School update GET')
+exports.highschool_update_get = function(req,res,next) {
+    HighSchool.findById(req.params.id, function(err, highschool) {
+        if (err) { return next(err); }
+        if (highschool==null) { // No results.
+            var err = new Error('Highschool not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Success.
+        res.render('highschool_form', { title: 'Update Highschool', highschool: highschool });
+    });
 };
 
 // Handle HighSchool delete on POST
-exports.highschool_update_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: School update POST')
-};
+exports.highschool_update_post = [
+
+    // Validate fields.
+    body('name', 'Name is required').isLength({ min:1 }).trim(),
+
+    // Sanitize fields.
+    sanitizeBody('name').trim().escape(),
+    
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+        // Create a Highschool object with escaped/trimmed data and current id.
+        var highschool = new HighSchool(
+                {
+                    name: req.body.name,
+                    _id: req.params.id
+                });
+
+        if (!errors.isEmpty()) {
+            // There are errors so render the form again with sanitized values and error messages.
+            res.render('highschool_form', { title: 'Update Highschool', highschool: highschool, errors: errors.array()});
+          return;
+        }
+        else {
+            // Data from form is valid. Update the record.
+            Participant.findByIdAndUpdate(req.params.id, highschool, {}, function (err,thehighschool) {
+                if (err) { return next(err); }
+                   // Successful - redirect to detail page.
+                    res.redirect(thehighschool.url);
+            });
+        }
+    }
+];

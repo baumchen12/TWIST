@@ -67,21 +67,84 @@ exports.room_create_post = [
 ];
 
 // Display Room delete form on GET
-exports.room_delete_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: Room delete GET')
+exports.room_delete_get = function(req,res,next) {
+    
+    Room.findById(req.params.id)
+    .exec(function (err, room) {
+        if (err) { return next(err); }
+        if (room==null) { // No results.
+            res.redirect('/index/rooms');
+        }
+        // Successful, so render.
+        res.render('room_delete', { title: 'Delete Room', room: room});
+    })
 };
 
 // Handle Room delete on POST
-exports.room_delete_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: Room delete POST')
+exports.room_delete_post = function(req,res,next) {
+    
+    // Assume valid Room id in field.
+    Room.findByIdAndRemove(req.body.id, function deleteRoom(err) {
+        if (err) { return next(err); }
+        // Success, so redirect to list of rooms.
+        res.redirect('/index/rooms');
+    });
 };
 
 //Display Room update form on GET
-exports.room_update_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: Room update GET')
+exports.room_update_get = function(req,res,next) {
+    Room.findById(req.params.id, function(err, room) {
+        if (err) { return next(err); }
+        if (room==null) { // No results.
+            var err = new Error('Room not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Success.
+        res.render('room_form', { title: 'Update Room', room: room });
+    });
 };
 
 // Handle Room delete on POST
-exports.room_update_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: Room update POST')
-};
+exports.room_update_post = [
+
+    // Validate fields.
+    body('roomNumber', 'Room Number is required').isLength({ min:1 }).trim(),
+    body('building', 'Building is required').isLength({ min:1 }).trim(),
+    body('capacity', 'Capacity is required').isLength({ min:1 }).trim(),
+
+    // Sanitize fields.
+    sanitizeBody('roomNumber').trim().escape(),
+    sanitizeBody('building').trim().escape(),
+    sanitizeBody('capacity').trim().escape(),
+    
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+        // Create a Room object with escaped/trimmed data and current id.
+        var room = new Room(
+                {
+                    roomNumber: req.body.roomNumber,
+                    building: req.body.building,
+                    capacity: req.body.capacity,
+                    _id: req.params.id
+                });
+
+        if (!errors.isEmpty()) {
+            // There are errors so render the form again with sanitized values and error messages.
+            res.render('room_form', { title: 'Update Room', room: room, errors: errors.array()});
+          return;
+        }
+        else {
+            // Data from form is valid. Update the record.
+            Room.findByIdAndUpdate(req.params.id, room, {}, function (err,theroom) {
+                if (err) { return next(err); }
+                   // Successful - redirect to detail page.
+                    res.redirect(theroom.url);
+            });
+        }
+    }
+];

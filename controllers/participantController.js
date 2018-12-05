@@ -80,11 +80,10 @@ exports.participant_create_post = [
 
             // Create a Participant object with escaped and trimmed data.
             var participant = new Participant(
-                {
-                    lastName: req.body.lastName,
-                    firstName: req.body.firstName,
-                    address: req.body.address,
-                    email: req.body.email
+                { lastName: req.body.lastName,
+                  firstName: req.body.firstName,
+                  address: req.body.address,
+                  email: req.body.email
                 });
             participant.save(function (err) {
                 if (err) { return next(err); }
@@ -111,7 +110,7 @@ exports.participant_delete_get = function(req,res,next) {
 };
 
 // Handle Participant delete on POST
-exports.participant_delete_post = function(req,res) {
+exports.participant_delete_post = function(req,res,next) {
     
     // Assume valid Participant id in field.
     Participant.findByIdAndRemove(req.body.id, function deleteParticipant(err) {
@@ -123,11 +122,63 @@ exports.participant_delete_post = function(req,res) {
 };
 
 //Display Participant update form on GET
-exports.participant_update_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: Participant update GET')
+exports.participant_update_get = function(req,res,next) {
+    Participant.findById(req.params.id, function(err, participant) {
+        if (err) { return next(err); }
+        if (participant==null) { // No results.
+            var err = new Error('Participant not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Success.
+        res.render('participant_form', { title: 'Update Participant', participant: participant });
+    });
 };
 
 // Handle Participant delete on POST
-exports.participant_update_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: Participant update POST')
-};
+exports.participant_update_post = [
+
+    // Validate fields.
+    body('firstName').isLength({ min: 1 }).trim().withMessage('First name must be specified.')
+        .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
+    body('lastName').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
+        .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.'),
+    body('address', 'Address is required').isLength({ min:1 }).trim(),
+    body('email', 'Email is required').isLength({ min: 1 }).trim(),
+
+    // Sanitize fields.
+    sanitizeBody('firstName').trim().escape(),
+    sanitizeBody('lastName').trim().escape(),
+    sanitizeBody('address').trim().escape(),
+    sanitizeBody('email').trim().escape(),
+    
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+        // Create a Participant object with escaped/trimmed data and current id.
+        var participant = new Participant(
+          { lastName: req.body.lastName,
+            firstName: req.body.firstName,
+            address: req.body.address,
+            email: req.body.email,
+            _id: req.params.id
+           });
+
+        if (!errors.isEmpty()) {
+            // There are errors so render the form again with sanitized values and error messages.
+            res.render('participant_form', { title: 'Update Participant', participant: participant, errors: errors.array()});
+          return;
+        }
+        else {
+            // Data from form is valid. Update the record.
+            Participant.findByIdAndUpdate(req.params.id, participant, {}, function (err,theparticipant) {
+                if (err) { return next(err); }
+                   // Successful - redirect to detail page.
+                    res.redirect(theparticipant.url);
+            });
+        }
+    }
+];

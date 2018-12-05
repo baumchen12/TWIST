@@ -10,11 +10,11 @@ block content
       label(for='lastName') Last Name:
       input#lastName.form-control(type='text' placeholder='Last name' name='lastName' required='true' value=(undefined===presenter ? '' : presenter.lastName) )
       label(for='occupation') Occupation:
-      input#occupation.form-control(type='text' placeholder='Occupation' name='occupation' required='true' value=(undefined===presenter ? '' : presenter.address) )
+      input#occupation.form-control(type='text' placeholder='Occupation' name='occupation' required='true' value=(undefined===presenter ? '' : presenter.occupation) )
       label(for='mainPhone') Main Phone:
-      input#mainPhone.form-control(type='text' placeholder='555-555-5555' name='mainPhone' required='true' value=(undefined===presenter ? '' : presenter.address) )
+      input#mainPhone.form-control(type='text' placeholder='555-555-5555' name='mainPhone' required='true' value=(undefined===presenter ? '' : presenter.mainPhone) )
       label(for='mobilePhone') Mobile Phone:
-      input#mobilePhone.form-control(type='text' placeholder='555-555-5555' name='mobilePhone' required='true' value=(undefined===presenter ? '' : presenter.address) )
+      input#mobilePhone.form-control(type='text' placeholder='555-555-5555' name='mobilePhone' required='true' value=(undefined===presenter ? '' : presenter.mobilePhone) )
       label(for='email') Email:
       input#email.form-control(type='text' placeholder='Email' name='email' required='true' value=(undefined===presenter ? '' : presenter.email) )
     button.btn.btn-primary(type='submit') Submit

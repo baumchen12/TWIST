@@ -79,21 +79,95 @@ exports.presenter_create_post = [
 
 
 // Display Presenter delete form on GET
-exports.presenter_delete_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: Presenter delete GET')
+exports.presenter_delete_get = function(req,res, next) {
+    
+    Presenter.findById(req.params.id)
+    .exec(function (err, presenter) {
+        if (err) { return next(err); }
+        if (presenter==null) { // No results.
+        res.redirect('/index/presenters');
+        }
+        // Successful, so render.
+        res.render('presenter_delete', { title: 'Delete Presenter', presenter: presenter});
+    })
 };
 
 // Handle Presenter delete on POST
-exports.presenter_delete_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: Presenter delete POST')
+exports.presenter_delete_post = function(req,res,next) {
+    
+    // Assume valid Presenter id in field.
+    Presenter.findByIdAndRemove(req.body.id, function deletePresenter(err) {
+        if (err) { return next(err); }
+        // Success, so redirect to list of presenters.
+        res.redirect('/index/presenters');
+    })
 };
 
 //Display Presenter update form on GET
-exports.presenter_update_get = function(req,res) {
-    res.send('NOT IMPLEMENTED: Presenter update GET')
+exports.presenter_update_get = function(req,res,next) {
+   Presenter.findById(req.params.id, function(err, presenter) {
+        if (err) { return next(err); }
+        if (presenter==null) { // No results.
+            var err = new Error('Presenter not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Success.
+        res.render('presenter_form', { title: 'Update Presenter', presenter: presenter });
+    });
 };
 
 // Handle Presenter delete on POST
-exports.presenter_update_post = function(req,res) {
-    res.send('NOT IMPLEMENTED: Presenter update POST')
-};
+exports.presenter_update_post = [
+
+    // Validate fields.
+    body('firstName').isLength({ min: 1 }).trim().withMessage('First name must be specified.')
+        .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
+    body('lastName').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
+        .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.'),
+    body('occupation', 'Occupation Required').isLength({ min:1 }).trim(),
+    body('mainPhone', 'Main Phone is required').isLength({ min:1 }).trim(),
+    body('mobilePhone', 'Mobile Phone is required').isLength({ min:1 }).trim(),
+    body('email', 'Email is required').isLength({ min: 1 }).trim(),
+
+    // Sanitize fields.
+    sanitizeBody('firstName').trim().escape(),
+    sanitizeBody('lastName').trim().escape(),
+    sanitizeBody('occupation').trim().escape(),
+    sanitizeBody('mainPhone').trim().escape(),
+    sanitizeBody('mobilePhone').trim().escape(),
+    sanitizeBody('email').trim().escape(),
+    
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+        // Create a Presenter object with escaped/trimmed data and current id.
+        var presenter = new Presenter(
+                {
+                    lastName: req.body.lastName,
+                    firstName: req.body.firstName,
+                    occupation: req.body.occupation,
+                    mainPhone: req.body.mainPhone,
+                    mobilePhone: req.body.mobilePhone,
+                    email: req.body.email,
+                    _id: req.params.id
+                });
+
+        if (!errors.isEmpty()) {
+            // There are errors so render the form again with sanitized values and error messages.
+            res.render('presenter_form', { title: 'Update Presenter', presenter: presenter, errors: errors.array()});
+          return;
+        }
+        else {
+            // Data from form is valid. Update the record.
+            Presenter.findByIdAndUpdate(req.params.id, presenter, {}, function (err,thepresenter) {
+                if (err) { return next(err); }
+                   // Successful - redirect to detail page.
+                    res.redirect(thepresenter.url);
+            });
+        }
+    }
+];
