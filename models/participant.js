@@ -8,6 +8,7 @@ var ParticipantSchema = new Schema (
 	firstName: {type: String, required: true, max: 100},
 	address: {type: String, required: true, max: 100},
 	email: {type: String, required: true, max: 100},
+	highSchool: {type: Schema.Types.ObjectId, ref: 'HighSchool', required: true},
 	timeStamp: {type: Date, default: Date.now},
 	participantType: {type: String},
     //interest:{}, needs added

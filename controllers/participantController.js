@@ -1,4 +1,5 @@
 var Participant = require('../models/participant');
+var HighSchool = require('../models/highschool');
 var Schedule = require('../models/schedule');
 var async = require('async');
 
@@ -20,31 +21,38 @@ exports.participant_list = function(req,res,next) {
 
 // Display detail page of all Participants
 exports.participant_detail = function(req,res, next) {
+
     async.parallel({
-      participant: function(callback) {
-        Participant.findById(req.params.id)
-          .exec(callback);
-      },
-      
-      /*participant_schedules: function(callback) {
-        Schedule.find({ 'participant': req.params.id })
-      },*/
-      
+        participant: function(callback) {
+            Participant.findById(req.params.id)
+                .exec(callback)
+        },
+        participants_highschools: function(callback) {
+            HighSchool.find({ 'participant': req.params.id }, 'title summary')
+            .exec(callback)
+        },
     }, function(err, results) {
         if (err) { return next(err); }
-        if (results.participant==null) { // No results.
+        if (results.participant==null) {
             var err = new Error('Participant not found');
             err.status = 404;
             return next(err);
         }
-        res.render('participant_detail', { title: 'Participant Detail', participant: results.participant, participant_schedules: results.participant_schedules } );
-    });
-  //res.send('NOT IMPLEMENTED: Participant detail page')
+        res.render('participant_detail', { 
+            title: 'Participant Detail', 
+            participant: results.participant, 
+            highschool: results.participants_highschools });
+    })
 };
 
 // Display Participant create form on GET.
 exports.participant_create_get = function(req,res,next) {
-    res.render('participant_form', { title: 'Create Participant' });
+    HighSchool.find()
+    .sort([['name', 'ascending']])
+    .exec(function (err, list_highschools) {
+        if (err) { return next(err); }   
+        res.render('participant_form', { title: 'Create Participant', highschool_list: list_highschools });
+    });
 };
 
 // Handle Participant create on POST
@@ -57,6 +65,7 @@ exports.participant_create_post = [
         .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.'),
     body('address', 'Address is required').isLength({ min:1 }).trim(),
     body('email', 'Email is required').isLength({ min: 1 }).trim(),
+    body('highSchool', 'High School is required').isLength({ min: 1 }).trim(),
 
     // Sanitize fields.
     sanitizeBody('firstName').trim().escape(),
@@ -83,7 +92,8 @@ exports.participant_create_post = [
                 { lastName: req.body.lastName,
                   firstName: req.body.firstName,
                   address: req.body.address,
-                  email: req.body.email
+                  email: req.body.email,
+                  highSchool: req.body.highSchool
                 });
             participant.save(function (err) {
                 if (err) { return next(err); }
@@ -123,15 +133,28 @@ exports.participant_delete_post = function(req,res,next) {
 
 //Display Participant update form on GET
 exports.participant_update_get = function(req,res,next) {
-    Participant.findById(req.params.id, function(err, participant) {
-        if (err) { return next(err); }
-        if (participant==null) { // No results.
-            var err = new Error('Participant not found');
-            err.status = 404;
-            return next(err);
-        }
+    console.log('Hello')
+    async.parallel({
+        participant: function(callback) {
+            Participant.findById(req.params.id).populate('highSchool').exec(callback);
+        },
+        highschool: function(callback) {
+            HighSchool.find(callback);
+        },
+        function(err, results) {
+            console.log('Hello2')
+            console.log(err)
+            if (err) { return next(err); }
+            console.log('Hello3')
+            if (results.participant==null) { // No results.
+                var err = new Error('Participant not found');
+                err.status = 404;
+                return next(err);
+            }
         // Success.
-        res.render('participant_form', { title: 'Update Participant', participant: participant });
+        
+        res.render('participant_delete', { title: 'Update Participant', participant: results.participant, highschool_list: result.highschool });
+        }
     });
 };
 
