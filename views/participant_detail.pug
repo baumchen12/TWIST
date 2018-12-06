@@ -6,12 +6,12 @@ block content
   
   div(style='margin-left:20px;margin-top:20px')
 
-    h4 Books
+    h4 Participant
     
     dl
-    //each schedule in participant_schedules
+    each participant in participant_list
       dt 
-        //a(href=schedule.url) #{participant.name}
+        a(href=schedule.url) #{participant.name}
       dd #{participant.address}
 
     else

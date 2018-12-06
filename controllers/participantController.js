@@ -20,15 +20,15 @@ exports.participant_list = function(req,res,next) {
 
 // Display detail page of all Participants
 exports.participant_detail = function(req,res, next) {
-    /*async.parallel({
+    async.parallel({
       participant: function(callback) {
         Participant.findById(req.params.id)
           .exec(callback);
       },
       
-      participant_schedules: function(callback) {
+      /*participant_schedules: function(callback) {
         Schedule.find({ 'participant': req.params.id })
-      },
+      },*/
       
     }, function(err, results) {
         if (err) { return next(err); }
@@ -38,8 +38,8 @@ exports.participant_detail = function(req,res, next) {
             return next(err);
         }
         res.render('participant_detail', { title: 'Participant Detail', participant: results.participant, participant_schedules: results.participant_schedules } );
-    });*/
-  res.send('NOT IMPLEMENTED: Participant detail page')
+    });
+  //res.send('NOT IMPLEMENTED: Participant detail page')
 };
 
 // Display Participant create form on GET.
