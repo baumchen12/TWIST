@@ -38,8 +38,11 @@ exports.index = function(req, res) {
 
 // Display list of all Schedules
 exports.schedule_list = function(req,res, next) {
-    Schedule.find({}, 'title participant')
-    .populate('participant')
+    Schedule.find({}, 'title schedule')
+    .populate('session')
+    .populate('topic')
+    .populate('presenter')
+    .populate('room')
     .exec(function (err, list_schedules) {
       if (err) { return next(err); }
       res.render('schedule_list', { title: 'Schedule List', schedule_list: list_schedules });
