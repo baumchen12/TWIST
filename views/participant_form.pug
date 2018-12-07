@@ -16,11 +16,11 @@ block content
       div.form-group
       label(for='school') School:
       select#highschool.form-control(type='select', placeholder='Select high school' name='highSchool' required='true' )
-        for highschool in highschool_list
+        for highSchool in highSchool_list
           if participant
-            option(value=highschool._id selected=(highschool._id.toString()==participant.highSchool ? 'selected' : false) ) #{highschool.name}
+            option(value=highSchool._id selected=(highSchool._id.toString()==participant.highSchool ? 'selected' : false) ) #{highSchool.name}
           else
-            option(value=highschool._id) #{highschool.name}
+            option(value=highSchool._id) #{highSchool.name}
     button.btn.btn-primary(type='submit') Submit
   if errors 
     ul

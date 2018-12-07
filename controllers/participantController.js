@@ -25,11 +25,12 @@ exports.participant_detail = function(req,res, next) {
     async.parallel({
         participant: function(callback) {
             Participant.findById(req.params.id)
+                .populate('highSchool')
                 .exec(callback)
         },
-        participants_highschools: function(callback) {
-            HighSchool.find({ 'participant': req.params.id }, 'title summary')
-            .exec(callback)
+        highSchool: function(callback) {
+            Participant.find({ 'highschool': req.params.id })
+            .exec(callback);
         },
     }, function(err, results) {
         if (err) { return next(err); }
@@ -38,10 +39,7 @@ exports.participant_detail = function(req,res, next) {
             err.status = 404;
             return next(err);
         }
-        res.render('participant_detail', { 
-            title: 'Participant Detail', 
-            participant: results.participant, 
-            highschool: results.participants_highschools });
+        res.render('participant_detail', { title: 'Participant Detail', participant: results.participant, highSchools: results.highSchool });
     })
 };
 
@@ -49,9 +47,9 @@ exports.participant_detail = function(req,res, next) {
 exports.participant_create_get = function(req,res,next) {
     HighSchool.find()
     .sort([['name', 'ascending']])
-    .exec(function (err, list_highschools) {
+    .exec(function (err, highSchools) {
         if (err) { return next(err); }   
-        res.render('participant_form', { title: 'Create Participant', highschool_list: list_highschools });
+        res.render('participant_form', { title: 'Create Participant', highSchool_list: highSchools });
     });
 };
 
@@ -92,8 +90,8 @@ exports.participant_create_post = [
                 { lastName: req.body.lastName,
                   firstName: req.body.firstName,
                   address: req.body.address,
-                  email: req.body.email,
-                  highSchool: req.body.highSchool
+                  highSchool: req.body.highSchool,
+                  email: req.body.email
                 });
             participant.save(function (err) {
                 if (err) { return next(err); }
@@ -116,7 +114,6 @@ exports.participant_delete_get = function(req,res,next) {
         // Successful, so render.
         res.render('participant_delete', { title: 'Delete Participant', participant: participant});
     })
-    //res.send('NOT IMPLEMENTED: Participant delete GET')
 };
 
 // Handle Participant delete on POST
@@ -128,37 +125,32 @@ exports.participant_delete_post = function(req,res,next) {
         // Success, so redirect to list of participants.
         res.redirect('/index/participants');
     });
-    //res.send('NOT IMPLEMENTED: Participant delete POST')
 };
 
 //Display Participant update form on GET
 exports.participant_update_get = function(req,res,next) {
-    console.log('Hello')
+
     async.parallel({
         participant: function(callback) {
-            Participant.findById(req.params.id).populate('highSchool').exec(callback);
+            Participant.findById(req.params.id).populate('highSchool').exec(callback)
         },
-        highschool: function(callback) {
-            HighSchool.find(callback);
+        highSchools: function(callback) {
+            HighSchool.find(callback)
         },
-        function(err, results) {
-            console.log('Hello2')
-            console.log(err)
+
+        }, function(err, results) {
             if (err) { return next(err); }
-            console.log('Hello3')
             if (results.participant==null) { // No results.
                 var err = new Error('Participant not found');
                 err.status = 404;
                 return next(err);
             }
-        // Success.
-        
-        res.render('participant_delete', { title: 'Update Participant', participant: results.participant, highschool_list: result.highschool });
-        }
-    });
+            res.render('participant_form', { title: 'Update  Participant', highSchool_list : results.highSchools, selected_highSchool : results.participant.highSchool._id, participant:results.participant });
+        });
+
 };
 
-// Handle Participant delete on POST
+// Handle Participant update on POST
 exports.participant_update_post = [
 
     // Validate fields.
@@ -186,6 +178,7 @@ exports.participant_update_post = [
           { lastName: req.body.lastName,
             firstName: req.body.firstName,
             address: req.body.address,
+            highSchool: req.body.highSchool,
             email: req.body.email,
             _id: req.params.id
            });
