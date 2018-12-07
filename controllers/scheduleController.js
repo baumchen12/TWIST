@@ -31,8 +31,11 @@ exports.index = function(req, res) {
       highschool_count: function(callback) {
         HighSchool.countDocuments({}, callback);
       },
+      schedule_count: function(callback) {
+      Schedule.countDocuments({}, callback);
+      },
     }, function(err, results) {
-        res.render('index', { title: 'Local Library Home', error: err, data: results });
+        res.render('index', { title: 'TWIST: Teen Women in Science and Technology', error: err, data: results });
     });
 };
 

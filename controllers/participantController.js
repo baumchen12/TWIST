@@ -1,6 +1,7 @@
 var Participant = require('../models/participant');
 var HighSchool = require('../models/highschool');
 var Schedule = require('../models/schedule');
+
 var async = require('async');
 
 const { body,validationResult } = require('express-validator/check');
