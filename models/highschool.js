@@ -16,4 +16,4 @@ HighSchoolSchema
 });
 
 // Export model
-module.exports = mongoose.model('High School', HighSchoolSchema);
+module.exports = mongoose.model('HighSchool', HighSchoolSchema);

@@ -65,7 +65,7 @@ router.get('/highschool/:id', highschool_controller.highschool_detail);
 // GET request for list of all HighSchools.
 router.get('/highschools', highschool_controller.highschool_list);
 
-/// AUTHOR ROUTES ///
+/// Participant ROUTES ///
 
 // GET request for creating Participant. NOTE This must come before route for id (i.e. display Participant).
 router.get('/participant/create', participant_controller.participant_create_get);
