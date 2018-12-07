@@ -1,4 +1,10 @@
 var Room = require('../models/room');
+var Presenter = require('../models/presenter');
+var Schedule = require('../models/schedule');
+var Topic = require('../models/topic');
+var Session = require('../models/session');
+
+var async = require('async');
 
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
@@ -14,8 +20,29 @@ exports.room_list = function(req,res,next) {
 };
 
 // Display detail page of all Rooms
-exports.room_detail = function(req,res) {
-    res.send('NOT IMPLEMENTED: Room Detail')
+exports.room_detail = function(req,res,next) {
+
+    async.parallel({
+        room: function(callback) {
+            Room.findById(req.params.id)
+                .exec(callback)
+        },
+        schedule: function(callback) {
+            Schedule.find({ 'room': req.params.id })
+            .populate('topic')
+            .populate('session')
+            .populate('presenter')
+            .exec(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.room==null) {
+            var err = new Error('Room not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('room_detail', { title: 'Room Detail', room: results.room, schedules: results.schedule });
+    })
 };
 
 // Display Room create form on GET.

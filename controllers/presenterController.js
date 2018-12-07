@@ -1,5 +1,8 @@
 var Presenter = require('../models/presenter');
 var Schedule = require('../models/schedule');
+var Topic = require('../models/topic');
+var Room = require('../models/room');
+var Session = require('../models/session');
 
 var async = require('async');
 
@@ -26,6 +29,9 @@ exports.presenter_detail = function(req,res,next) {
         },
         schedule: function(callback) {
             Schedule.find({ 'presenter': req.params.id })
+            .populate('topic')
+            .populate('session')
+            .populate('room')
             .exec(callback);
         },
     }, function(err, results) {
@@ -35,7 +41,7 @@ exports.presenter_detail = function(req,res,next) {
             err.status = 404;
             return next(err);
         }
-        res.render('presenter_detail', { title: 'Presenter Detail', presenter: results.presenter, schedule: results.schedule });
+        res.render('presenter_detail', { title: 'Presenter Detail', presenter: results.presenter, schedules: results.schedule });
     })
 };
 
@@ -97,7 +103,6 @@ exports.presenter_create_post = [
         }
     }
 ];
-
 
 // Display Presenter delete form on GET
 exports.presenter_delete_get = function(req,res, next) {

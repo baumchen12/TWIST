@@ -10,14 +10,14 @@ block content
     
     dl
       each participant in highSchool_participants
-        dt 
+        dd 
           a(href=participant.url) #{participant.name}
 
       else
         p This school has no participants.
         
-      hr
-      p
-        a(href=highSchool.url+'/delete') Delete High School
-      p
-        a(href=highSchool.url+'/update') Update High School
+  hr
+  p
+    a(href=highSchool.url+'/delete') Delete High School
+  p
+    a(href=highSchool.url+'/update') Update High School
