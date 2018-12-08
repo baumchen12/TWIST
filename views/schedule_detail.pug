@@ -11,7 +11,7 @@ block content
     p #[strong Presenter: ]
       a(href=schedule.presenter.url) #{schedule.presenter.name}
     p #[strong Room:] 
-      a(href=schedule.room.url) #{schedule.room.roomNumber}
+      a(href=schedule.room.url) #{schedule.room.roomNumber}, #{schedule.room.building}
     p #[strong Session:] 
       a(href=schedule.session.url) #{schedule.session.time}
   

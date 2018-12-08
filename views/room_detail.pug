@@ -13,8 +13,8 @@ block content
     dl
     each schedule in schedules
       dd 
-        a(href=schedule.url) #[strong #{schedule.topic.title}]
-        p #[strong Presenter:] #{schedule.presenter.name}<br>#[strong Time:] #{schedule.session.time}
+        a(href=schedule.url) #[strong Time:] #{schedule.session.time}
+        p #[strong Topic:] #{schedule.topic.title}<br> #[strong Presenter:] #{schedule.presenter.name}
   
   div(style='margin-left:20px;margin-top:20px')
 

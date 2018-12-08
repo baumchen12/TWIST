@@ -27,7 +27,7 @@ block content
           if schedule
             option(value=room._id selected=(room._id.toString()==schedule.room ? 'selected' : false) ) #{room.roomNumber}
           else
-            option(value=room._id) #{room.roomNumber}
+            option(value=room._id) #{room.roomNumber}, #{room.building}
     div.form-group
       label(for='session') Session:
       select#session.form-control(type='select', placeholder='Select session' name='session' required='true' )

@@ -7,7 +7,7 @@ block content
     each schedule in schedule_list
       li 
         a(href=schedule.url) #{schedule.session.time} 
-        |  Room: #{schedule.room.roomNumber}
+        |  Room: #{schedule.room.roomNumber}, #{schedule.room.building}
         |  (#{schedule.topic.title} - #{schedule.presenter.name}) 
 
     else
