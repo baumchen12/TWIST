@@ -32,7 +32,7 @@ exports.index = function(req, res) {
         HighSchool.countDocuments({}, callback);
       },
       schedule_count: function(callback) {
-      Schedule.countDocuments({}, callback);
+        Schedule.countDocuments({}, callback);
       },
     }, function(err, results) {
         res.render('index', { title: 'TWIST: Teen Women in Science and Technology', error: err, data: results });

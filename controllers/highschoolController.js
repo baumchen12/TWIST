@@ -24,7 +24,7 @@ exports.highschool_detail = function(req,res,next) {
                 .exec(callback)
         },
         highSchools_participants: function(callback) {
-          Participant.find({ 'highSchool': req.params.id },'highSchool')
+          Participant.find({ 'highSchool': req.params.id }, ['lastName', 'firstName'])
           .exec(callback)
         },
     }, function(err, results) {
@@ -86,7 +86,7 @@ exports.highschool_create_post = [
 exports.highschool_delete_get = function(req,res,next) {
     
     HighSchool.findById(req.params.id)
-    .exec(function (err, highschool){
+        .exec(function (err, highschool){
         if (err) { return next(err); }
         if (highschool==null) { // No results.
             res.redirect('/index/highschools');
@@ -100,7 +100,7 @@ exports.highschool_delete_get = function(req,res,next) {
 exports.highschool_delete_post = function(req,res,next) {
     
     // Assume valid Highschool id in field.
-    HighSchool.findByIdAndRemove(req.body.id, function deleteHighSchool(err){
+    HighSchool.findByIdAndRemove(req.body.highschoolid, function deleteHighSchool(err){
         if (err) { return next(err); }
         // Success, so redirect to list of highschools.
         res.redirect('/index/highschools');
