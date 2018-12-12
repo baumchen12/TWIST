@@ -9,6 +9,18 @@ body{
    
 }
 
+h1, h2, h3, h4, label, p, li, ul, a{
+  color: #512888;
+}
+
+.btn-primary{
+  background-color: #512888;
+}
+
+.btn-info{
+  background-color: #512888;
+}
+
 /* Remove the navbar's default margin-bottom and rounded borders */ 
 .navbar {
     margin-bottom: 25px;
