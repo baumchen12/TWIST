@@ -15,32 +15,55 @@ html(lang='en')
           block sidebar
             ul(class='sidebar-nav')
               li 
-                a(href='/index') Home
-              li 
-                a(href='/index/highschools') All highschools
-              li 
-                a(href='/index/participants') All participants
-              li 
-                a(href='/index/presenters') All presenters
-              li 
-                a(href='/index/rooms') All rooms
-              li 
-                a(href='/index/sessions') All sessions
-              li 
-                a(href='/index/topics') All topics
-              li 
-                img.img-responsive(src='/images/powercat.png', class='float-left' width='20%'  alt='KSU')
-              li 
-                a(href='/index/highschool/create') Create new highschool
-              li 
-                a(href='/index/participant/create') Create new participant
-              li 
-                a(href='/index/presenter/create') Create new presenter
-              li 
-                a(href='/index/room/create') Create new room
-              li 
-                a(href='/index/session/create') Create new session
-              li 
-                a(href='/index/topic/create') Create new topic
+
+              .container
+                a.btn.btn-info(href='/index', role='button') Home
+              br                                
+              .container
+                h4 Navigate: Area
+   
+                .dropdown
+                  button#menu1.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown')
+                    | Selection 
+                    span.caret
+                  ul.dropdown-menu(role='menu', aria-labelledby='menu1')
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/highschools') All Highschools
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/participants') All Participants
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/presenters') All Presenters
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/rooms') All Rooms
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/sessions') All Sessions
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/topics') All Topics
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/schedules') All Schedules
+                br              
+              .container
+                h4 Create: New
+   
+                .dropdown
+                  button#menu1.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown')
+                    | Selection 
+                    span.caret
+                  ul.dropdown-menu(role='menu', aria-labelledby='menu1')
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/highschool/create') Highschool
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/participant/create') Participant
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/presenter/create') Presenter
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/room/create') Room
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/session/create') Session
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/topic/create') Topic
+                    li(role='presentation')
+                      a(role='menuitem', tabindex='-1', href='/index/schedule/create') Schedule
+
         div(class='col-sm-10')
           block content

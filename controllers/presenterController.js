@@ -1,4 +1,10 @@
 var Presenter = require('../models/presenter');
+var Schedule = require('../models/schedule');
+var Topic = require('../models/topic');
+var Room = require('../models/room');
+var Session = require('../models/session');
+
+var async = require('async');
 
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
@@ -14,8 +20,29 @@ exports.presenter_list = function(req,res,next) {
 };
 
 // Display detail page of all Presenters
-exports.presenter_detail = function(req,res) {
-    res.send('NOT IMPLEMENTED: Presenter Detail')
+exports.presenter_detail = function(req,res,next) {
+
+    async.parallel({
+        presenter: function(callback) {
+            Presenter.findById(req.params.id)
+                .exec(callback)
+        },
+        schedule: function(callback) {
+            Schedule.find({ 'presenter': req.params.id })
+            .populate('topic')
+            .populate('session')
+            .populate('room')
+            .exec(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.presenter==null) {
+            var err = new Error('Presenter not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('presenter_detail', { title: 'Presenter Detail', presenter: results.presenter, schedules: results.schedule });
+    })
 };
 
 // Display Presenter create form on GET.
@@ -76,7 +103,6 @@ exports.presenter_create_post = [
         }
     }
 ];
-
 
 // Display Presenter delete form on GET
 exports.presenter_delete_get = function(req,res, next) {

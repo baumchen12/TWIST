@@ -1,4 +1,10 @@
 var Session = require('../models/session');
+var Presenter = require('../models/presenter');
+var Schedule = require('../models/schedule');
+var Topic = require('../models/topic');
+var Room = require('../models/room');
+
+var async = require('async');
 
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
@@ -14,8 +20,29 @@ exports.session_list = function(req,res,next) {
 };
 
 // Display detail page of all Sessions
-exports.session_detail = function(req,res) {
-    res.send('NOT IMPLEMENTED: Session Detail')
+exports.session_detail = function(req,res,next) {
+
+    async.parallel({
+        session: function(callback) {
+            Session.findById(req.params.id)
+                .exec(callback)
+        },
+        schedule: function(callback) {
+            Schedule.find({ 'session': req.params.id })
+            .populate('topic')
+            .populate('presenter')
+            .populate('room')
+            .exec(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.session==null) {
+            var err = new Error('Session not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('session_detail', { title: 'Session Detail', session: results.session, schedules: results.schedule });
+    })
 };
 
 // Display Session create form on GET.

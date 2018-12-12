@@ -1,4 +1,10 @@
 var Topic = require('../models/topic');
+var Presenter = require('../models/presenter');
+var Schedule = require('../models/schedule');
+var Room = require('../models/room');
+var Session = require('../models/session');
+
+var async = require('async');
 
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
@@ -14,9 +20,31 @@ exports.topic_list = function(req,res,next) {
 };
 
 // Display detail page of all Topics
-exports.topic_detail = function(req,res) {
-    res.send('NOT IMPLEMENTED: Topic Detail')
+exports.topic_detail = function(req,res,next) {
+
+    async.parallel({
+        topic: function(callback) {
+            Topic.findById(req.params.id)
+                .exec(callback)
+        },
+        schedule: function(callback) {
+            Schedule.find({ 'topic': req.params.id })
+            .populate('presenter')
+            .populate('session')
+            .populate('room')
+            .exec(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.topic==null) {
+            var err = new Error('Topic not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('topic_detail', { title: 'Topic Detail', topic: results.topic, schedules: results.schedule });
+    })
 };
+
 
 // Display Topic create form on GET.
 exports.topic_create_get = function(req,res,next) {

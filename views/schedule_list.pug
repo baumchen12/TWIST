@@ -6,8 +6,9 @@ block content
   ul
     each schedule in schedule_list
       li 
-        a(href=schedule.url) #{schedule.title} 
-        //|  (#{book.author.name})
+        a(href=schedule.url) #{schedule.session.time} 
+        |  Room: #{schedule.room.roomNumber}, #{schedule.room.building}
+        |  (#{schedule.topic.title} - #{schedule.presenter.name}) 
 
     else
       li There are no schedules.

@@ -1,4 +1,6 @@
 var HighSchool = require('../models/highschool');
+var Participant = require('../models/participant');
+var async = require('async');
 
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
@@ -14,8 +16,28 @@ exports.highschool_list = function(req,res,next) {
 };
 
 // Display detail page of all HighSchools
-exports.highschool_detail = function(req,res) {
-    res.send('NOT IMPLEMENTED: School Detail')
+exports.highschool_detail = function(req,res,next) {
+
+    async.parallel({
+        highSchool: function(callback) {
+            HighSchool.findById(req.params.id)
+                .exec(callback)
+        },
+        highSchools_participants: function(callback) {
+          Participant.find({ 'highSchool': req.params.id }, ['lastName', 'firstName'])
+          .exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); } // Error in API usage.
+        if (results.highSchool==null) { // No results.
+            var err = new Error('Highschool not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Successful, so render.
+        res.render('highschool_detail', { title: 'Highschool Detail', highSchool: results.highSchool, highSchool_participants: results.highSchools_participants } );
+    });
+
 };
 
 // Display HighSchool create form on GET.
@@ -64,7 +86,7 @@ exports.highschool_create_post = [
 exports.highschool_delete_get = function(req,res,next) {
     
     HighSchool.findById(req.params.id)
-    .exec(function (err, highschool){
+        .exec(function (err, highschool){
         if (err) { return next(err); }
         if (highschool==null) { // No results.
             res.redirect('/index/highschools');
@@ -78,7 +100,7 @@ exports.highschool_delete_get = function(req,res,next) {
 exports.highschool_delete_post = function(req,res,next) {
     
     // Assume valid Highschool id in field.
-    HighSchool.findByIdAndRemove(req.body.id, function deleteHighSchool(err){
+    HighSchool.findByIdAndRemove(req.body.highschoolid, function deleteHighSchool(err){
         if (err) { return next(err); }
         // Success, so redirect to list of highschools.
         res.redirect('/index/highschools');
@@ -99,7 +121,7 @@ exports.highschool_update_get = function(req,res,next) {
     });
 };
 
-// Handle HighSchool delete on POST
+// Handle HighSchool update on POST
 exports.highschool_update_post = [
 
     // Validate fields.
