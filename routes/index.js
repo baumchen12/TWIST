@@ -195,9 +195,4 @@ router.get('/topic/:id', topic_controller.topic_detail);
 // GET request for list of all Topics.
 router.get('/topics', topic_controller.topic_list);
 
-/* GET home page. */
-//router.get('/', function(req, res, next) {
-  //res.render('index', { title: 'Express' });
-//});
-
 module.exports = router;
